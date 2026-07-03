@@ -1,0 +1,77 @@
+CREATE DATABASE IF NOT EXISTS twirl_boutique CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+USE twirl_boutique;
+
+CREATE TABLE IF NOT EXISTS users (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  email VARCHAR(255) NOT NULL UNIQUE,
+  password_hash VARCHAR(255) NOT NULL,
+  full_name VARCHAR(120) NOT NULL,
+  role ENUM('customer','admin') NOT NULL DEFAULT 'customer',
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+CREATE TABLE IF NOT EXISTS categories (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  name VARCHAR(80) NOT NULL UNIQUE
+);
+
+CREATE TABLE IF NOT EXISTS products (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  sku VARCHAR(40) NOT NULL UNIQUE,
+  title VARCHAR(255) NOT NULL,
+  category_id INT UNSIGNED NOT NULL,
+  price_cents INT UNSIGNED NOT NULL,
+  description TEXT,
+  stock_qty INT UNSIGNED NOT NULL DEFAULT 0,
+  image_url VARCHAR(512) NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (category_id) REFERENCES categories(id)
+);
+
+CREATE TABLE IF NOT EXISTS cart_items (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NOT NULL,
+  product_id INT UNSIGNED NOT NULL,
+  qty INT UNSIGNED NOT NULL DEFAULT 1,
+  size_label VARCHAR(80) NULL,
+  UNIQUE KEY uq_cart_user_product (user_id, product_id),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
+
+CREATE TABLE IF NOT EXISTS orders (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NOT NULL,
+  total_cents INT UNSIGNED NOT NULL,
+  status ENUM('pending','processing','shipped','cancelled') NOT NULL DEFAULT 'pending',
+  payment_method ENUM('cod') NOT NULL DEFAULT 'cod',
+  shipping_name VARCHAR(120) NOT NULL,
+  shipping_address VARCHAR(255) NOT NULL,
+  shipping_city VARCHAR(100) NOT NULL,
+  shipping_postal VARCHAR(32) NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (user_id) REFERENCES users(id)
+);
+
+CREATE TABLE IF NOT EXISTS order_items (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  order_id INT UNSIGNED NOT NULL,
+  product_id INT UNSIGNED NOT NULL,
+  title_snapshot VARCHAR(255) NOT NULL,
+  unit_price_cents INT UNSIGNED NOT NULL,
+  qty INT UNSIGNED NOT NULL,
+  FOREIGN KEY (order_id) REFERENCES orders(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES products(id)
+);
+
+CREATE TABLE IF NOT EXISTS reviews (
+  id INT UNSIGNED AUTO_INCREMENT PRIMARY KEY,
+  user_id INT UNSIGNED NOT NULL,
+  product_id INT UNSIGNED NOT NULL,
+  rating TINYINT UNSIGNED NOT NULL,
+  comment TEXT NOT NULL,
+  created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  UNIQUE KEY uq_review_user_product (user_id, product_id),
+  FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+  FOREIGN KEY (product_id) REFERENCES products(id) ON DELETE CASCADE
+);
