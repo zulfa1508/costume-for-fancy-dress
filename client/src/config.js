@@ -1,0 +1,1 @@
+export const API_URL = "https://costume-for-fancy-dress.onrender.com";
