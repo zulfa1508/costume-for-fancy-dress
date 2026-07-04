@@ -25,3 +25,21 @@ export async function api(path, options = {}, token) {
 
   return data;
 }
+
+export async function apiForm(path, formData, token, method = "POST") {
+  const headers = {};
+
+  if (token) headers.Authorization = `Bearer ${token}`;
+
+  const res = await fetch(API_URL + path, {
+    method,
+    body: formData,
+    headers,
+  });
+
+  const data = await res.json().catch(() => ({}));
+
+  if (!res.ok) throw new Error(data.error || "Request failed");
+
+  return data;
+}

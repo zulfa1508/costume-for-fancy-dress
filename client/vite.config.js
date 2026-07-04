@@ -7,11 +7,11 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/api": {
-        target: "http://127.0.0.1:3001",
+        target: import.meta.env.VITE_API_URL,
         changeOrigin: true,
       },
       "/uploads": {
-        target: "http://127.0.0.1:3001",
+        target: import.meta.env.VITE_API_URL,
         changeOrigin: true,
       },
     },

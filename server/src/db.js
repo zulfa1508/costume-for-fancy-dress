@@ -3,14 +3,6 @@ import dotenv from "dotenv";
 
 dotenv.config();
 
-const pool = mysql.createPool({
-  host: process.env.MYSQL_HOST || "127.0.0.1",
-  port: Number(process.env.MYSQL_PORT || 3306),
-  user: process.env.MYSQL_USER || "root",
-  password: process.env.MYSQL_PASSWORD || "",
-  database: process.env.MYSQL_DATABASE || "twirl_boutique",
-  waitForConnections: true,
-  connectionLimit: 10,
-});
+const pool = mysql.createPool(process.env.MYSQL_URL);
 
 export default pool;
