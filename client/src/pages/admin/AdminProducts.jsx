@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { api, apiForm } from "../../api.js";
+import { api,  } from "../../api.js";
 import { useAuth } from "../../auth/AuthContext.jsx";
 
 function emptyForm(categories) {

@@ -7,11 +7,11 @@ export default defineConfig({
     port: 5173,
     proxy: {
       "/api": {
-        target: import.meta.env.VITE_API_URL,
+        target: "https://costume-for-fancy-dress.onrender.com",
         changeOrigin: true,
       },
       "/uploads": {
-        target: import.meta.env.VITE_API_URL,
+        target: "https://costume-for-fancy-dress.onrender.com",
         changeOrigin: true,
       },
     },
